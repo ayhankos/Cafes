@@ -325,7 +325,7 @@ const Navbar = ({ user }: { user: any }) => {
                         className="w-full flex items-center justify-center space-x-2"
                       >
                         <img
-                          src="/api/placeholder/20/20"
+                          src="/google.png"
                           alt="Google"
                           className="w-5 h-5"
                         />
@@ -405,7 +405,7 @@ const Navbar = ({ user }: { user: any }) => {
                         className="w-full flex items-center justify-center space-x-2"
                       >
                         <img
-                          src="/api/placeholder/20/20"
+                          src="/google.png"
                           alt="Google"
                           className="w-5 h-5"
                         />

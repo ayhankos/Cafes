@@ -42,11 +42,20 @@ model Cafe {
     district      String
     description   String?
     googleMapsUrl String?
+    images        Image[]
     comments      Comment[]
     ratings       Rating[]
     favorites     Favorite[]
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt
+}
+
+model Image {
+    id        String   @id @default(cuid())
+    url       String
+    cafe      Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+    cafeId    String
+    createdAt DateTime @default(now())
 }
 
 model Account {
@@ -88,7 +97,7 @@ model Comment {
 
 model Rating {
     id        String   @id @default(cuid())
-    score     Int      @default(0) // 1-5
+    rating    Float    @default(0)
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String
     createdAt DateTime @default(now())

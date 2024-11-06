@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -24,6 +25,7 @@ type City = {
 };
 
 const HeroSection = () => {
+  const router = useRouter();
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState<string>("");
@@ -48,7 +50,6 @@ const HeroSection = () => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Daha yumuşak hareket için değerleri küçülttük
       const x = (window.innerWidth / 2 - e.clientX) / 30;
       const y = (window.innerHeight / 2 - e.clientY) / 30;
       setMousePosition({ x, y });
@@ -68,16 +69,19 @@ const HeroSection = () => {
 
   const handleSearch = () => {
     if (selectedCity && selectedDistrict) {
-      console.log(
-        `Searching for cafes in ${currentCity?.text}, ${selectedDistrict}`
-      );
+      // URL'de Türkçe karakterleri ve boşlukları düzgün göstermek için encodeURIComponent kullanıyoruz
+      const cityName = encodeURIComponent(currentCity?.text || "");
+      const districtName = encodeURIComponent(selectedDistrict);
+
+      // /cafes sayfasına yönlendirme yapıyoruz ve parametreleri query string olarak ekliyoruz
+      router.push(`/cafes?city=${cityName}&district=${districtName}`);
     }
   };
 
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-gradient-to-br from-[#A67B5B] via-[#DABE99] to-[#F3E5D8] flex items-center justify-center p-4">
-        <Card className="w-full max-w-3xl bg-white/80 backdrop-blur-md">
+        <Card className="w-full max-w-3xl bg-white/40 backdrop-blur-md">
           <CardHeader>
             <Skeleton className="h-12 w-[300px] mx-auto mb-4" />
             <Skeleton className="h-6 w-[400px] mx-auto" />
@@ -95,35 +99,33 @@ const HeroSection = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#A67B5B] via-[#DABE99] to-[#F3E5D8] flex items-center justify-center p-4 overflow-hidden relative">
-      {/* Kahve bardağı parallax efekti - Büyütülmüş ve ortada */}
+    <div className="w-full min-h-screen bg-gradient-to-br from-stone-100 via-[#cdbfac] to-stone-200 flex items-center justify-center p-4 overflow-hidden relative">
       <div
         className="absolute w-full h-full pointer-events-none flex items-center justify-center"
         style={{
           transform: `perspective(1000px) rotateX(${mousePosition.y}deg) rotateY(${mousePosition.x}deg)`,
-          transition: "transform 0.2s ease-out", // Geçişi biraz yavaşlattık
+          transition: "transform 0.2s ease-out",
         }}
       >
         <img
           src="/3dcoffee.png"
           alt="Coffee Cup Background"
-          className="w-[800px] h-[800px] object-contain opacity-25" // Boyutu ve opaklığı artırdık
+          className="w-[800px] h-[800px] object-contain opacity-25"
           style={{
             transform: `translate(${mousePosition.x * 2}px, ${
               mousePosition.y * 2
             }px)`,
-            transition: "transform 0.2s ease-out", // Hareket geçişini yumuşattık
+            transition: "transform 0.2s ease-out",
           }}
         />
       </div>
 
-      {/* Mevcut arkaplan */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('/api/placeholder/1920/1080')] opacity-10 bg-cover bg-center" />
+      <div className="absolute top-0 left-0 w-full h-full" />
 
-      <Card className="w-full max-w-3xl bg-white/40 backdrop-blur-md shadow-xl relative z-10">
+      <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-sm shadow-xl relative z-10">
         <CardHeader className="space-y-6">
           <CardTitle className="text-4xl font-bold text-center bg-gradient-to-r from-[#4A3728] to-[#8B5E34] bg-clip-text text-transparent">
-            Kahve Keşfinin Tadını Çıkarın
+            Kafe Keşfinin Tadını Çıkarın
           </CardTitle>
           <p className="text-xl text-center text-[#6B4423]">
             Size en yakın ve en iyi kahve mekanlarını keşfedin

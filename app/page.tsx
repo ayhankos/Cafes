@@ -1,12 +1,9 @@
-import Navbar from "@/components/navbar";
-import GetUserSession from "@/utils/user/get";
-import Image from "next/image";
+import Main from "./anasayfa/page";
 
-export default async function Main() {
-  const user = await GetUserSession();
+export default async function Page() {
   return (
-    <div className="">
-      <Navbar user={user} />
+    <div>
+      <Main />
     </div>
   );
 }

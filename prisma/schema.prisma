@@ -7,145 +7,48 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// Kullanıcı Tablosu
 model User {
-    id                String              @id @default(cuid())
-    name              String?
-    email             String              @unique
-    password          String?
-    provider          String?
-    profileImage      String?
-    role              UserRole            @default(USER)
-    comments          Comment[]
-    ratings           Rating[]
-    discussions       Discussion[]
-    comparisons       Comparison[]
-    createdAt         DateTime            @default(now())
-    updatedAt         DateTime            @updatedAt
-    DiscussionComment DiscussionComment[]
-    accounts          Account[]
-    sessions          Session[]
-}
-
-// Araba Tablosu
-model Car {
-    id           String          @id @default(cuid())
-    brand        String
-    model        String
-    year         Int
-    description  String?
-    image        String?
-    fuelType     FuelType?
-    transmission Transmission?
+    id           String     @id @default(cuid())
+    name         String?
+    email        String     @unique
+    password     String?
+    provider     String?
+    profileImage String?
+    role         UserRole   @default(USER)
     comments     Comment[]
     ratings      Rating[]
-    comparisons  ComparisonCar[]
-    createdAt    DateTime        @default(now())
-    updatedAt    DateTime        @updatedAt
-
-    @@index([brand, model, year])
+    favorites    Favorite[]
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+    accounts     Account[]
+    sessions     Session[]
 }
 
-// Yorum Tablosu
-model Comment {
+model Favorite {
     id        String   @id @default(cuid())
-    content   String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String
-    car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-    carId     String
+    cafeId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    cafe      Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
 
-    @@index([userId, carId])
+    @@unique([userId, cafeId])
 }
 
-// Puanlama Tablosu
-model Rating {
-    id          String   @id @default(cuid())
-    performance Int      @default(0) // 1-5
-    safety      Int      @default(0) // 1-5
-    comfort     Int      @default(0) // 1-5
-    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String
-    car         Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-    carId       String
-    createdAt   DateTime @default(now())
-
-    @@unique([userId, carId]) // Bir kullanıcı bir arabayı bir kez puanlayabilir
-    @@index([userId, carId])
+model Cafe {
+    id            String     @id @default(cuid())
+    name          String
+    city          String
+    district      String
+    description   String?
+    googleMapsUrl String?
+    comments      Comment[]
+    ratings       Rating[]
+    favorites     Favorite[]
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
 }
 
-// Tartışma Tablosu
-model Discussion {
-    id        String              @id @default(cuid())
-    title     String
-    content   String
-    user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String
-    comments  DiscussionComment[]
-    createdAt DateTime            @default(now())
-    updatedAt DateTime            @updatedAt
-}
-
-// Tartışma Yorumları
-model DiscussionComment {
-    id           String     @id @default(cuid())
-    content      String
-    user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId       String
-    discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-    discussionId String
-    createdAt    DateTime   @default(now())
-
-    @@index([discussionId, userId])
-}
-
-// Karşılaştırma Tablosu
-model Comparison {
-    id        String          @id @default(cuid())
-    title     String
-    user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String
-    cars      ComparisonCar[]
-    createdAt DateTime        @default(now())
-    updatedAt DateTime        @updatedAt
-}
-
-// Arabaların Karşılaştırmada Yer Alması için Ara Tablo
-model ComparisonCar {
-    id           String     @id @default(cuid())
-    car          Car        @relation(fields: [carId], references: [id], onDelete: Cascade)
-    carId        String
-    comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
-    comparisonId String
-
-    @@unique([carId, comparisonId])
-}
-
-// Kullanıcı Rol Enum'u
-enum UserRole {
-    USER
-    ADMIN
-    MODERATOR
-}
-
-// Yakıt Tipi Enum'u
-enum FuelType {
-    GASOLINE
-    DIESEL
-    ELECTRIC
-    HYBRID
-    LPG
-}
-
-// Vites Tipi Enum'u
-enum Transmission {
-    MANUAL
-    AUTOMATIC
-    SEMI_AUTOMATIC
-}
-
-// OAuth hesapları için Account modeli
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -165,11 +68,35 @@ model Account {
     @@unique([provider, providerAccountId])
 }
 
-// Oturum yönetimi için Session modeli
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+    id        String   @id @default(cuid())
+    content   String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+    createdAt DateTime @default(now())
+    Cafe      Cafe?    @relation(fields: [cafeId], references: [id])
+    cafeId    String?
+}
+
+model Rating {
+    id        String   @id @default(cuid())
+    score     Int      @default(0) // 1-5
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+    createdAt DateTime @default(now())
+    Cafe      Cafe?    @relation(fields: [cafeId], references: [id])
+    cafeId    String?
+}
+
+enum UserRole {
+    USER
+    ADMIN
 }

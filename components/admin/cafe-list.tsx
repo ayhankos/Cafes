@@ -41,15 +41,18 @@ export function CafeList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/cafes/${id}`, {
+      const response = await fetch(`/api/cafes`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to delete cafe");
       }
 
-      // Yeniden veri çek
       mutate();
     } catch (error) {
       console.error("Error deleting cafe:", error);

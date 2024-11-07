@@ -78,3 +78,47 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await auth();
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    const cafe = await prisma.cafe.findUnique({
+      where: {
+        id: id as string,
+      },
+    });
+
+    if (!cafe) {
+      return NextResponse.json({ error: "Cafe not found" }, { status: 404 });
+    }
+
+    await prisma.cafe.delete({
+      where: {
+        id: id as string,
+      },
+    });
+
+    return NextResponse.json({ data: cafe });
+  } catch (error) {
+    console.error("Error deleting cafe:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

@@ -17,7 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true, // Aynı email ile farklı provider'ları bağlamaya izin ver
+      allowDangerousEmailAccountLinking: true,
       async profile(profile) {
         const existingUser = await prisma.user.findUnique({
           where: { email: profile.email },

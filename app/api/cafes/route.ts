@@ -1,5 +1,6 @@
 import prisma from "@/prisma/database";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 export async function GET(request: Request) {
   try {
@@ -28,6 +29,49 @@ export async function GET(request: Request) {
     return NextResponse.json({ data: cafes });
   } catch (error) {
     console.error("Error fetching cafes:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const session = await auth();
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { name, city, district, description, googleMapsUrl, images } = body;
+
+    const cafe = await prisma.cafe.create({
+      data: {
+        name,
+        city,
+        district,
+        description,
+        googleMapsUrl,
+        images: {
+          create: images.map((url: string) => ({
+            url,
+          })),
+        },
+      },
+      include: {
+        images: true,
+      },
+    });
+
+    return NextResponse.json({ data: cafe }, { status: 201 });
+  } catch (error) {
+    console.error("Error creating cafe:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

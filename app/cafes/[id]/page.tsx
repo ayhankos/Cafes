@@ -340,22 +340,20 @@ export default function CafeDetailsPage() {
         </div>
 
         <div className="space-y-6">
-          {cafe.googleMapsUrl && (
+          {cafe.googleMapsEmbedUrl && (
             <Card>
               <CardHeader>
                 <CardTitle>Konum</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-96">
-                  <a
-                    href={cafe.googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
-                  >
-                    <MapPin className="w-8 h-8 mr-2" />
-                    Haritada Görüntüle
-                  </a>
+                  <iframe
+                    src={cafe.googleMapsEmbedUrl}
+                    width="100%"
+                    height="100%"
+                    allowFullScreen
+                    loading="lazy"
+                  ></iframe>
                 </div>
               </CardContent>
             </Card>

@@ -49,7 +49,15 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, city, district, description, googleMapsUrl, images } = body;
+    const {
+      name,
+      city,
+      district,
+      description,
+      googleMapsUrl,
+      googleMapsEmbedUrl,
+      images,
+    } = body;
 
     const cafe = await prisma.cafe.create({
       data: {
@@ -58,6 +66,7 @@ export async function POST(request: Request) {
         district,
         description,
         googleMapsUrl,
+        googleMapsEmbedUrl,
         images: {
           create: images.map((url: string) => ({
             url,

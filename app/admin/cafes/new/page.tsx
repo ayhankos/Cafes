@@ -30,6 +30,7 @@ const formSchema = z.object({
   }),
   description: z.string().optional(),
   googleMapsUrl: z.string().url().optional().or(z.literal("")),
+  googleMapsEmbedUrl: z.string().url().optional().or(z.literal("")),
   images: z.array(z.string()).optional(),
 });
 
@@ -44,6 +45,7 @@ export default function NewCafePage() {
       district: "",
       description: "",
       googleMapsUrl: "",
+      googleMapsEmbedUrl: "",
       images: [],
     },
   });
@@ -145,6 +147,23 @@ export default function NewCafePage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Google Maps URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://maps.google.com/..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="googleMapsEmbedUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Google Maps Embed URL</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="https://maps.google.com/..."

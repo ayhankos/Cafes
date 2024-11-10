@@ -110,3 +110,14 @@ enum UserRole {
     USER
     ADMIN
 }
+
+model Contacts {
+    id        String   @id @default(cuid())
+    name      String
+    email     String
+    phone     String
+    subject   String
+    message   String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

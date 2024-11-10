@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Coffee, LayoutDashboard, Users } from "lucide-react";
+import { Coffee, Contact, LayoutDashboard, Users } from "lucide-react";
 
 const routes = [
   {
@@ -25,13 +25,19 @@ const routes = [
     href: "/admin/users",
     pattern: /^\/admin\/users/,
   },
+  {
+    label: "Contacts",
+    icon: Contact,
+    href: "/admin/contacts",
+    pattern: /^\/admin\/contacts/,
+  },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-gray-900 text-white">
+    <div className="space-y-4 py-4 flex flex-col h-full bg-stone-300">
       <div className="px-3 py-2 flex-1">
         <Link href="/admin" className="flex items-center pl-3 mb-14">
           <h1 className="text-2xl font-bold">Admin Panel</h1>

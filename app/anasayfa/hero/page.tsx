@@ -99,7 +99,7 @@ const HeroSection = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-stone-100 via-[#cdbfac] to-stone-200 flex items-center justify-center p-4 overflow-hidden relative">
+    <div className="w-full min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
       <div
         className="absolute w-full h-full pointer-events-none flex items-center justify-center"
         style={{

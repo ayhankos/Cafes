@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("font-sans antialiased", MontserratFont.variable)}>
+      <body className={cn("font-sans antialiased ", MontserratFont.variable)}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -283,9 +283,10 @@ export default function CafeDetailsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="space-y-6">
-          <Card>
-            <div className="relative h-64 w-full">
+        {/* Sol Kolon */}
+        <div className="flex flex-col space-y-6">
+          <Card className="flex-1">
+            <div className="h-96">
               <Swiper
                 modules={[Navigation, Pagination]}
                 navigation={true}
@@ -295,11 +296,11 @@ export default function CafeDetailsPage() {
               >
                 {cafe.images.map((image) => (
                   <SwiperSlide key={image.id}>
-                    <div className="h-64 w-full">
+                    <div className="h-full w-full">
                       <img
                         src={image.url}
                         alt={cafe.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
                   </SwiperSlide>
@@ -308,40 +309,45 @@ export default function CafeDetailsPage() {
             </div>
           </Card>
 
-          <Card>
+          <Card className="flex-1">
             <CardHeader>
               <CardTitle>Kafe Bilgileri</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {cafe.description && (
-                <p className="text-gray-600">{cafe.description}</p>
-              )}
-              <div className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-[#6B4423]" />
-                <p>
-                  {cafe.city}, {cafe.district}
-                </p>
-              </div>
-              {cafe.googleMapsUrl && (
+            <CardContent>
+              <div className="space-y-4">
+                {cafe.description && (
+                  <div className="max-h-48 overflow-y-auto">
+                    <p className="text-gray-600">{cafe.description}</p>
+                  </div>
+                )}
                 <div className="flex items-center">
-                  <Globe className="w-5 h-5 mr-2 text-[#6B4423]" />
-                  <a
-                    href={cafe.googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Haritada Görüntüle
-                  </a>
+                  <MapPin className="w-5 h-5 mr-2 text-[#6B4423]" />
+                  <p>
+                    {cafe.city}, {cafe.district}
+                  </p>
                 </div>
-              )}
+                {cafe.googleMapsUrl && (
+                  <div className="flex items-center">
+                    <Globe className="w-5 h-5 mr-2 text-[#6B4423]" />
+                    <a
+                      href={cafe.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Haritada Görüntüle
+                    </a>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="space-y-6">
+        {/* Sağ Kolon */}
+        <div className="flex flex-col space-y-6">
           {cafe.googleMapsEmbedUrl && (
-            <Card>
+            <Card className="flex-1">
               <CardHeader>
                 <CardTitle>Konum</CardTitle>
               </CardHeader>
@@ -359,7 +365,7 @@ export default function CafeDetailsPage() {
             </Card>
           )}
 
-          <Card>
+          <Card className="flex-1">
             <CardHeader>
               <CardTitle>Değerlendirme</CardTitle>
             </CardHeader>
@@ -385,6 +391,7 @@ export default function CafeDetailsPage() {
         </div>
       </div>
 
+      {/* Yorumlar Bölümü */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Yorumlar</CardTitle>

@@ -36,19 +36,39 @@ model Favorite {
 }
 
 model Cafe {
-    id                 String     @id @default(cuid())
+    id                 String        @id @default(cuid())
     name               String
     city               String
     district           String
-    description        String?
+    category           String
+    description        String?       @db.LongText
     googleMapsUrl      String?
-    googleMapsEmbedUrl String?
+    googleMapsEmbedUrl String?       @db.LongText
     images             Image[]
     comments           Comment[]
     ratings            Rating[]
     favorites          Favorite[]
-    createdAt          DateTime   @default(now())
-    updatedAt          DateTime   @updatedAt
+    contactInfos       ContactInfo[]
+    createdAt          DateTime      @default(now())
+    updatedAt          DateTime      @updatedAt
+}
+
+model ContactInfo {
+    id        String      @id @default(cuid())
+    type      ContactType
+    value     String
+    cafe      Cafe        @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+    cafeId    String
+    createdAt DateTime    @default(now())
+}
+
+enum ContactType {
+    WEBSITE
+    INSTAGRAM
+    FACEBOOK
+    TWITTER
+    PHONE
+    EMAIL
 }
 
 model Image {

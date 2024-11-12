@@ -39,11 +39,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await auth();
-
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -51,17 +49,20 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       name,
+      category,
       city,
       district,
       description,
       googleMapsUrl,
       googleMapsEmbedUrl,
       images,
+      contactInfos,
     } = body;
 
     const cafe = await prisma.cafe.create({
       data: {
         name,
+        category,
         city,
         district,
         description,
@@ -72,9 +73,16 @@ export async function POST(request: Request) {
             url,
           })),
         },
+        contactInfos: {
+          create: contactInfos.map((info: { type: string; value: string }) => ({
+            type: info.type,
+            value: info.value,
+          })),
+        },
       },
       include: {
         images: true,
+        contactInfos: true,
       },
     });
 

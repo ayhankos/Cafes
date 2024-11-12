@@ -37,6 +37,7 @@ export async function GET(
           },
         },
         favorites: true,
+        contactInfos: true,
       },
     });
 

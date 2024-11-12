@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Star, MapPin, Coffee, Heart, Globe, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -21,7 +21,19 @@ import type {
   User,
   Rating,
   Favorite,
+  ContactInfo,
 } from "@prisma/client";
+import {
+  Star,
+  MapPin,
+  Coffee,
+  Heart,
+  Globe,
+  Globe2,
+  LogIn,
+  Phone,
+} from "lucide-react";
+import { Icon } from "@iconify/react";
 
 interface ExtendedCafe extends Cafe {
   images: Image[];
@@ -30,6 +42,7 @@ interface ExtendedCafe extends Cafe {
   })[];
   ratings: Rating[];
   favorites: Favorite[];
+  contactInfos: ContactInfo[];
 }
 
 export default function CafeDetailsPage() {
@@ -260,8 +273,11 @@ export default function CafeDetailsPage() {
       cafe.ratings.length
     : 0;
 
+  const getContactInfo = (type: string) => {
+    return cafe.contactInfos.find((info) => info.type === type)?.value;
+  };
   return (
-    <div className="container mx-auto px-4 py-8 mt-24">
+    <div className="container mx-auto px-4 py-8 mt-">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-[#6B4423]">{cafe.name}</h1>
         <div className="flex items-center gap-4">
@@ -315,17 +331,21 @@ export default function CafeDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                {/* Description */}
                 {cafe.description && (
                   <div className="max-h-48 overflow-y-auto">
                     <p className="text-gray-600">{cafe.description}</p>
                   </div>
                 )}
+
+                {/* Location */}
                 <div className="flex items-center">
                   <MapPin className="w-5 h-5 mr-2 text-[#6B4423]" />
                   <p>
                     {cafe.city}, {cafe.district}
                   </p>
                 </div>
+
                 {cafe.googleMapsUrl && (
                   <div className="flex items-center">
                     <Globe className="w-5 h-5 mr-2 text-[#6B4423]" />
@@ -339,6 +359,62 @@ export default function CafeDetailsPage() {
                     </a>
                   </div>
                 )}
+
+                {/* Category */}
+                <div className="flex items-center gap-2">
+                  <Coffee className="w-5 h-5 text-[#6B4423]" />
+                  <span className="px-2 py-1 bg-[#6B4423]/10 text-[#6B4423] rounded-full text-sm">
+                    {cafe.category}
+                  </span>
+                </div>
+
+                {/* Contact Info */}
+                <div className="space-y-2 border-t pt-4">
+                  <h3 className="font-medium mb-2">İletişim Bilgileri</h3>
+                  {/* Phone */}
+                  {getContactInfo("PHONE") && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-[#6B4423]" />
+                      <a
+                        href={`tel:${getContactInfo("PHONE")}`}
+                        className="hover:underline"
+                      >
+                        {getContactInfo("PHONE")}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Instagram */}
+                  {getContactInfo("INSTAGRAM") && (
+                    <div className="flex items-center gap-2">
+                      <Icon icon="skill-icons:instagram" color="#6B4423" />
+                      <a
+                        href={`https://instagram.com/${getContactInfo(
+                          "INSTAGRAM"
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        @{getContactInfo("INSTAGRAM")}
+                      </a>
+                    </div>
+                  )}
+                  {/* Website */}
+                  {getContactInfo("WEBSITE") && (
+                    <div className="flex items-center gap-2">
+                      <Globe2 className="w-4 h-4 text-[#6B4423]" />
+                      <a
+                        href={getContactInfo("WEBSITE")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        Website
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -402,7 +478,7 @@ export default function CafeDetailsPage() {
               placeholder={
                 session
                   ? "Yorumunuzu yazın..."
-                  : "Yorum yapmak için giriş yapmalısınız"
+                  : "Yorum yapmak için giriş yapmalısınız."
               }
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -411,9 +487,19 @@ export default function CafeDetailsPage() {
             />
             <Button type="submit" disabled={!session}>
               {!session && <LogIn className="mr-2" size={20} />}
-              {session ? "Yorum Yap" : "Yorum yapmak için giriş yapın"}
+              {session ? "Yorum Yap" : "Yorum yapmak için giriş yapın."}
             </Button>
           </form>
+
+          {!session && (
+            <Link
+              href="/"
+              target="_blank"
+              className="text-sm text-gray-500 mt-2"
+            >
+              <p>Giriş Yapmak İçin Tıklayınız.</p>
+            </Link>
+          )}
 
           <div className="space-y-4">
             {cafe.comments.map((comment) => (

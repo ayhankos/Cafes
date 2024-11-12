@@ -7,11 +7,11 @@ export default function CafesPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Cafes</h1>
-        <Link href="/admin/cafes/new">
-          <Button>Add New Cafe</Button>
-        </Link>
       </div>
       <CafeList />
+      <Link href="/admin/cafes/new">
+        <Button className="mt-10">Add New Cafe</Button>
+      </Link>
     </div>
   );
 }

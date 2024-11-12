@@ -32,6 +32,7 @@ import {
   Globe2,
   LogIn,
   Phone,
+  ArrowBigLeft,
 } from "lucide-react";
 import { Icon } from "@iconify/react";
 
@@ -277,8 +278,13 @@ export default function CafeDetailsPage() {
     return cafe.contactInfos.find((info) => info.type === type)?.value;
   };
   return (
-    <div className="container mx-auto px-4 py-8 mt-">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
+        <ArrowBigLeft
+          className="w-8 h-8 mr-2 cursor-pointer hover:scale-110 transition-transform duration-200"
+          color="#6B4423"
+          onClick={() => history.back()}
+        />
         <h1 className="text-3xl font-bold text-[#6B4423]">{cafe.name}</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center">

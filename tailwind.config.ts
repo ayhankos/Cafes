@@ -9,6 +9,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "radial-gradient-stranger":
+          "radial-gradient(circle at top left, #e7e4e0 10%, #cdbfac 30%)",
+      },
+      scale: {
+        "130": "1.3",
+      },
+      rotate: {
+        "360": "360deg",
+      },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "50%": { transform: "translateY(-10px) translateX(10px)" },
+        },
+      },
+      animation: {
+        float: "float 5s ease-in-out infinite",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -55,9 +74,6 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      backgroundImage: {
-        "hero-pattern": 'url("/bg/kafe.jpg")',
       },
     },
   },

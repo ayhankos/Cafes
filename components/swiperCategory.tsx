@@ -24,47 +24,47 @@ type Character = {
 const characters: Character[] = [
   {
     id: 1,
-    name: "Self Servis",
+    name: "Self Servis Kafeler",
     image: "/cafe/self.jpeg",
   },
   {
     id: 2,
-    name: "Butik",
+    name: "Butik Kafeler",
     image: "/cafe/butik.jpg",
   },
   {
     id: 3,
-    name: "Nostaljik",
+    name: "Nostaljik Kafeler",
     image: "/cafe/nostaljik.png",
   },
   {
     id: 4,
-    name: "Kitap",
+    name: "Kitap Kafeler",
     image: "/cafe/kitap.png",
   },
   {
     id: 5,
-    name: "Canlı Müzik",
+    name: "Canlı Müzikli Kafeler",
     image: "/cafe/canlimuzik.jpg",
   },
   {
     id: 6,
-    name: "Sanat",
+    name: "Sanat Kafe",
     image: "/cafe/sanat.jpeg",
   },
   {
     id: 7,
-    name: "Açık Hava",
+    name: "Açık Hava Kafeleri",
     image: "/cafe/acikhava.png",
   },
   {
     id: 8,
-    name: "Vegan ve Sağlıklı Yaşam",
+    name: "Vegan ve Sağlıklı Yaşam Kafeleri",
     image: "/cafe/vegan.png",
   },
   {
     id: 9,
-    name: "Konsept",
+    name: "Konsept Kafeler",
     image: "/cafe/konsept.jpeg",
   },
 ];
@@ -115,7 +115,7 @@ const swiperParams: SwiperOptions = {
 
 const CafeCategorySlider = () => {
   return (
-    <div className="min-h-screen w-full bg-[#111113] bg-radial-gradient-stranger flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen w-full flex items-center justify-center overflow-hidden relative">
       <div className="absolute inset-0 w-full h-full">
         {Array.from({ length: 180 }).map((_, index) => (
           <div

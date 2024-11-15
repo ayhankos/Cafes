@@ -1,6 +1,6 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   Car,
@@ -15,6 +15,8 @@ import {
   LogOut,
   Coffee,
   UserPlus,
+  X,
+  Menu,
 } from "lucide-react";
 import {
   Dialog,
@@ -47,6 +49,18 @@ const Navbar = ({ user }: { user: any }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const { toast } = useToast();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,7 +224,13 @@ const Navbar = ({ user }: { user: any }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/40 backdrop-blur-md shadow-md"
+          : "bg-transparent shadow-none"
+      }`}
+    >
       <div className="max-w-8xl mx-auto py-4 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -221,7 +241,8 @@ const Navbar = ({ user }: { user: any }) => {
             />
           </div>
 
-          <div className="flex items-center space-x-5">
+          <div className="hidden md:flex items-center space-x-5">
+            {/* Desktop menu items */}
             <a
               href="/"
               className="flex items-center text-[#6B4423] hover:text-[#8B5E34] transition-colors duration-300"
@@ -300,7 +321,7 @@ const Navbar = ({ user }: { user: any }) => {
                 </PopoverContent>
               </Popover>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <Dialog
                   open={isLoginDialogOpen}
                   onOpenChange={setIsLoginDialogOpen}
@@ -492,9 +513,82 @@ const Navbar = ({ user }: { user: any }) => {
                 </Dialog>
               </div>
             )}
+            <button
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-[#6B4423]" />
+              ) : (
+                <Menu className="h-6 w-6 text-[#6B4423]" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white/80 backdrop-blur-md shadow-md p-6 space-y-4">
+          <a
+            href="/"
+            className="flex items-center text-[#6B4423] hover:text-[#8B5E34] transition-colors duration-300"
+          >
+            <Home className="mr-2" size={20} />
+            Ana Sayfa
+          </a>
+          <a
+            href="/en-iyi-kafeler"
+            className="flex items-center text-[#6B4423] hover:text-[#8B5E34] transition-colors duration-300"
+          >
+            <Coffee className="mr-2" size={20} />
+            En İyi Kafeler
+          </a>
+          <a
+            href="/tartismalar"
+            className="flex items-center text-[#6B4423] hover:text-[#8B5E34] transition-colors duration-300"
+          >
+            <MessageCircle className="mr-2" size={20} />
+            En Çok Tartışılanlar
+          </a>
+          {user ? (
+            <div className="flex flex-col space-y-2">
+              <Button
+                variant="ghost"
+                className="justify-start text-[#6B4423] hover:text-[#8B5E34] hover:bg-[#8B5E34]/10"
+                onClick={() => console.log("Favorilerim tıklandı")}
+              >
+                <Star className="mr-2" size={20} />
+                Favorilerim
+              </Button>
+              <Button
+                variant="ghost"
+                className="justify-start text-[#6B4423] hover:text-[#8B5E34] hover:bg-[#8B5E34]/10"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                <LogOut className="mr-2" size={20} />
+                Çıkış Yap
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col space-y-2">
+              <Button
+                className="bg-[#6B4423] hover:bg-[#8B5E34] text-white px-6 py-2 rounded-full transition-colors duration-300"
+                onClick={() => setIsLoginDialogOpen(true)}
+              >
+                <LogIn className="mr-2" size={20} />
+                Giriş Yap
+              </Button>
+              <Button
+                variant="outline"
+                className="border-[#6B4423] text-[#6B4423] hover:bg-[#6B4423] hover:text-white px-6 py-2 rounded-full transition-colors duration-300"
+                onClick={() => setIsRegisterDialogOpen(true)}
+              >
+                <UserPlus className="mr-2" size={20} />
+                Kayıt Ol
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

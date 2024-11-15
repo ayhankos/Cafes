@@ -4,7 +4,7 @@ import Hero from "./hero/page";
 import Footer from "@/components/footer";
 import CafeCategorySlider from "@/components/swiperCategory";
 import Stats from "@/components/stats";
-import SSS from "@/components/howTo";
+import SSS from "@/components/SSS";
 
 export default async function Main() {
   const user = await GetUserSession();

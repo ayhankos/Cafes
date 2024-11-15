@@ -19,7 +19,7 @@ export default function SSS() {
   ];
 
   return (
-    <div className="w-full py-8 flex flex-col items-center min-h-screen ">
+    <div className="w-full py-8 flex flex-col items-center">
       <h1 className="text-4xl text-[#6B4423] mb-5 font-bold">
         Sıkça Sorulan Sorular
       </h1>
@@ -47,7 +47,11 @@ export default function SSS() {
 
       <div className="mt-8">
         <Badge variant="outline" className="bg-[#eae0d5] text-[#6B4423]">
-          Daha fazla soru için bize ulaşın
+          Daha fazla soru için bizimle&nbsp;
+          <Link href="/contact" className="underline" target="__blank">
+            bu sayfa üzerinden
+          </Link>
+          &nbsp; iletişime geçebilirsiniz.
         </Badge>
       </div>
     </div>

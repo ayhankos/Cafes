@@ -15,7 +15,7 @@ export default function Footer() {
                 target="_blank"
                 className="hover:underline me-4 md:me-6"
               >
-                About
+                Hakkımızda
               </a>
             </li>
             <li>
@@ -24,7 +24,7 @@ export default function Footer() {
                 target="_blank"
                 className="hover:underline me-4 md:me-6"
               >
-                Privacy Policy
+                Gizlilik Politikası
               </a>
             </li>
             <li>
@@ -33,12 +33,12 @@ export default function Footer() {
                 target="_blank"
                 className="hover:underline me-4 md:me-6"
               >
-                Licensing
+                Lisanslar
               </a>
             </li>
             <li>
               <a href="/contact" target="_blank" className="hover:underline">
-                Contact
+                İletişim
               </a>
             </li>
           </ul>

@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, MapPin, Coffee } from "lucide-react";
+import { Star, MapPin, Coffee, ArrowBigLeft } from "lucide-react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -126,59 +126,68 @@ export default function CafesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#6B4423] mb-2">
-          {decodeURIComponent(city || "")} -{" "}
-          {decodeURIComponent(district || "")} Kafeleri
-        </h1>
-        <p className="text-[#8B5E34]">
-          <MapPin className="inline-block mr-1" size={16} />
-          {cafes.length} kafe bulundu
-        </p>
-      </div>
+    <div className="bg-gradient-to-br from-stone-100 via-[#cdbfac] to-stone-200">
+      <div className="container mx-auto px-4 py-8 min-h-screen">
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-[#6B4423] mb-2">
+              {decodeURIComponent(city || "")} -{" "}
+              {decodeURIComponent(district || "")} Kafeleri
+            </h1>
+            <p className="text-[#8B5E34]">
+              <MapPin className="inline-block mr-1" size={16} />
+              {cafes.length} kafe bulundu
+            </p>
+          </div>
+          <ArrowBigLeft
+            className="w-8 h-8 mr-2 cursor-pointer hover:scale-110 transition-transform duration-200"
+            color="#6B4423"
+            onClick={() => history.back()}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cafes.map((cafe) => (
-          <Card
-            key={cafe.id}
-            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-            onClick={() => (window.location.href = `/cafes/${cafe.id}`)}
-          >
-            <div className="relative h-64">
-              <Swiper
-                modules={[Navigation, Pagination]}
-                navigation
-                pagination={{ clickable: true }}
-                className="h-full"
-              >
-                {cafe.images.map((image) => (
-                  <SwiperSlide key={image.id}>
-                    <img
-                      src={image.url}
-                      alt={cafe.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-            <CardContent className="p-4">
-              <h2 className="text-xl font-semibold text-[#6B4423] mb-2">
-                {cafe.name}
-              </h2>
-              <div className="flex items-center text-[#8B5E34]">
-                <Star className="w-5 h-5 fill-current text-yellow-500 mr-1" />
-                <span className="font-medium">
-                  {calculateAverageRating(cafe.ratings)}
-                </span>
-                <span className="text-sm ml-1">
-                  ({cafe.ratings.length} değerlendirme)
-                </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {cafes.map((cafe) => (
+            <Card
+              key={cafe.id}
+              className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer bg-white/20"
+              onClick={() => (window.location.href = `/cafes/${cafe.id}`)}
+            >
+              <div className="relative h-44">
+                <Swiper
+                  autoplay={{
+                    delay: 2000,
+                  }}
+                  className="h-full"
+                >
+                  {cafe.images.map((image) => (
+                    <SwiperSlide key={image.id}>
+                      <img
+                        src={image.url}
+                        alt={cafe.name}
+                        className="w-full h-full object-fill"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <CardContent className="p-4">
+                <h2 className="text-xl font-semibold text-[#6B4423] mb-2">
+                  {cafe.name}
+                </h2>
+                <div className="flex items-center text-[#8B5E34]">
+                  <Star className="w-5 h-5 fill-current text-yellow-500 mr-1" />
+                  <span className="font-medium">
+                    {calculateAverageRating(cafe.ratings)}
+                  </span>
+                  <span className="text-sm ml-1">
+                    ({cafe.ratings.length} değerlendirme)
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

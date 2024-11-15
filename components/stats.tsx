@@ -8,7 +8,7 @@ export default async function Stats() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <div className="relative mx-auto max-w-4xl  h-full w-full flex-row items-center justify-center px-4 py-12 backdrop-blur-md sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <div className="relative mx-auto max-w-4xl h-full w-full flex-row items-center justify-center px-4 py-12 backdrop-blur-md sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <h1 className="text-center text-4xl text-[#6B4423] font-extrabold">
             İstatistikler
           </h1>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Montserrat } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
+import { Toaster } from "@/components/ui/toaster";
 
 const MontserratFont = Montserrat({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("font-sans antialiased ", MontserratFont.variable)}>
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );

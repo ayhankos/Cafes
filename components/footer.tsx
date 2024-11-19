@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className=" bot-0 left-0 right-0 z-50">
+    <footer className="bot-0 left-0 right-0 z-50">
       <div className="max-w-8xl mx-auto py-4 px-6">
         <div className="sm:flex sm:items-center sm:justify-between">
           <img
@@ -8,7 +8,7 @@ export default function Footer() {
             alt="Cafe Website Logo"
             className="h-20 w-auto"
           />
-          <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+          <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-stone-500 sm:mb-0 dark:text-stone-400 z-50">
             <li>
               <a
                 href="/about"

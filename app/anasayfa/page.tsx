@@ -28,8 +28,8 @@ export default async function Main() {
   });
 
   return (
-    <div className="relative min-h-screen">
-      <div className="absolute inset-0 w-full h-full">
+    <div className="relative">
+      <div className="absolute inset-0 w-full h-full -z-99">
         {icons.map((icon, index) => (
           <Icon
             key={index}

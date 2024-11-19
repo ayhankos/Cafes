@@ -493,12 +493,7 @@ export default function CafeDetailsPage() {
                 className="mb-4"
                 disabled={!session}
               />
-              <Button
-                type="button"
-                variant="outline"
-                className="border bg-white/20 text-[#6B4423] hover:bg-white/20"
-                disabled={!session}
-              >
+              <Button type="submit" variant={"outline"} disabled={!session}>
                 {!session && <LogIn className="mr-2" size={20} />}
                 {session ? "Yorum Yap" : "Yorum yapmak için giriş yapın."}
               </Button>

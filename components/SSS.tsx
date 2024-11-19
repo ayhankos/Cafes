@@ -45,10 +45,14 @@ export default function SSS() {
         ))}
       </Accordion>
 
-      <div className="mt-8">
+      <div className="mt-8 z-30">
         <Badge variant="outline" className="bg-[#eae0d5] text-[#6B4423]">
           Daha fazla soru için bizimle&nbsp;
-          <Link href="/contact" className="underline" target="__blank">
+          <Link
+            href="/contact"
+            className="underline cursor-pointer"
+            target="__blank"
+          >
             bu sayfa üzerinden
           </Link>
           &nbsp; iletişime geçebilirsiniz.

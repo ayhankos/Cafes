@@ -110,7 +110,8 @@ const Navbar = ({ user }: { user: any }) => {
           title: "Google ile giriş başarısız",
           description: "Lütfen tekrar deneyin.",
         });
-      } else {
+      }
+      if (result?.ok) {
         toast({
           title: "Giriş başarılı",
           description: "Google hesabınızla başarıyla giriş yaptınız!",
@@ -204,7 +205,9 @@ const Navbar = ({ user }: { user: any }) => {
           title: "Google ile kayıt başarısız",
           description: "Lütfen tekrar deneyin.",
         });
-      } else {
+      }
+
+      if (result?.ok) {
         toast({
           title: "Kayıt başarılı",
           description: "Google hesabınızla başarıyla kayıt oldunuz!",

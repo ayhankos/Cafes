@@ -1,8 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Overview } from "@/components/admin/overview";
 import { RecentCafes } from "@/components/admin/recent-cafes";
+import prisma from "@/prisma/database";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const cafesCount = await prisma.cafe.count();
+  const usersCount = await prisma.user.count();
+  const commentsCount = await prisma.comment.count();
+
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -13,7 +18,7 @@ export default function AdminPage() {
             <CardTitle className="text-sm font-medium">Total Cafes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">123</div>
+            <div className="text-2xl font-bold">{cafesCount}</div>
           </CardContent>
         </Card>
 
@@ -22,7 +27,7 @@ export default function AdminPage() {
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,234</div>
+            <div className="text-2xl font-bold">{usersCount}</div>
           </CardContent>
         </Card>
 
@@ -33,7 +38,7 @@ export default function AdminPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">789</div>
+            <div className="text-2xl font-bold">{commentsCount}</div>
           </CardContent>
         </Card>
 

@@ -29,10 +29,12 @@ export default function BestCafesPage() {
         <h1 className="text-4xl font-bold text-center mb-8">En İyi Kafeler</h1>
 
         <div className="mb-8">
-          <CityDistrictFilter />
+          <Suspense fallback={<div>Filtreler yükleniyor...</div>}>
+            <CityDistrictFilter />
+          </Suspense>
         </div>
 
-        <Suspense fallback={<div>Yükleniyor...</div>}>
+        <Suspense fallback={<div>Kafeler yükleniyor...</div>}>
           <CafeList />
         </Suspense>
       </div>

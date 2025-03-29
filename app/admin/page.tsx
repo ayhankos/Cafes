@@ -2,11 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Overview } from "@/components/admin/overview";
 import { RecentCafes } from "@/components/admin/recent-cafes";
 import prisma from "@/prisma/database";
+import GetRecentCafes from "@/utils/cafes/recent/recentCafes";
 
 export default async function AdminPage() {
   const cafesCount = await prisma.cafe.count();
   const usersCount = await prisma.user.count();
   const commentsCount = await prisma.comment.count();
+
+  const recentCafes = await GetRecentCafes();
 
   return (
     <div className="space-y-8">
@@ -56,7 +59,7 @@ export default async function AdminPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Overview />
-        <RecentCafes />
+        <RecentCafes recentCafes={recentCafes} />
       </div>
     </div>
   );

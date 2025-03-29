@@ -2,25 +2,18 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import Select from "react-select";
 
 type District = {
   value: number;
-  text: string;
+  label: string;
 };
 
 type City = {
   value: number;
-  text: string;
+  label: string;
   districts: District[];
 };
 
@@ -28,16 +21,33 @@ const HeroSection = () => {
   const router = useRouter();
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCity, setSelectedCity] = useState<string>("");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(
+    null
+  );
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Reset district when city changes
+  useEffect(() => {
+    setSelectedDistrict(null);
+  }, [selectedCity]);
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
         const response = await fetch("/ililce.json");
         const data = await response.json();
-        setCities(data);
+
+        const formattedCities: City[] = data.map((city: any) => ({
+          value: city.value,
+          label: city.text,
+          districts: city.districts.map((district: any) => ({
+            value: district.value,
+            label: district.text,
+          })),
+        }));
+
+        setCities(formattedCities);
       } catch (error) {
         console.error("Error loading cities:", error);
       } finally {
@@ -59,47 +69,27 @@ const HeroSection = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    setSelectedDistrict("");
-  }, [selectedCity]);
-
-  const currentCity = cities.find(
-    (city) => city.value.toString() === selectedCity
-  );
-
   const handleSearch = () => {
     if (selectedCity && selectedDistrict) {
-      // URL'de Türkçe karakterleri ve boşlukları düzgün göstermek için encodeURIComponent kullanıyoruz
-      const cityName = encodeURIComponent(currentCity?.text || "");
-      const districtName = encodeURIComponent(selectedDistrict);
+      const cityName = encodeURIComponent(selectedCity.label.toUpperCase());
+      const districtName = encodeURIComponent(
+        selectedDistrict.label.toUpperCase()
+      );
 
-      // /cafes sayfasına yönlendirme yapıyoruz ve parametreleri query string olarak ekliyoruz
       router.push(`/cafes?city=${cityName}&district=${districtName}`);
     }
   };
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gradient-to-br from-[#A67B5B] via-[#DABE99] to-[#F3E5D8] flex items-center justify-center p-4">
-        <Card className="w-full max-w-3xl bg-white/40 backdrop-blur-md">
-          <CardHeader>
-            <Skeleton className="h-12 w-[300px] mx-auto mb-4" />
-            <Skeleton className="h-6 w-[400px] mx-auto" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4 md:flex-row md:items-end">
-              <Skeleton className="h-12 flex-1" />
-              <Skeleton className="h-12 flex-1" />
-              <Skeleton className="h-12 w-[120px]" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="w-full min-h-screen flex items-center justify-center p-4">
+        Yükleniyor...
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+    <div className="w-full min-h-screen flex items-center justify-center p-4 overflow-hidden relative bg-gradient-to-br from-[#A67B5B] via-[#DABE99] to-[#F3E5D8]">
       <div
         className="absolute w-full h-full pointer-events-none flex items-center justify-center"
         style={{
@@ -120,63 +110,125 @@ const HeroSection = () => {
         />
       </div>
 
-      <div className="absolute top-0 left-0 w-full h-full" />
-
-      <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-sm shadow-xl relative z-10">
-        <CardHeader className="space-y-6">
-          <CardTitle className="text-4xl font-bold text-center bg-gradient-to-r from-[#4A3728] to-[#8B5E34] bg-clip-text text-transparent">
+      <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-md shadow-xl relative z-10 p-6 rounded-2xl">
+        <CardHeader className="text-center">
+          <CardTitle className="text-4xl font-bold bg-gradient-to-r from-[#4A3728] to-[#8B5E34] bg-clip-text text-transparent">
             Kafe Keşfinin Tadını Çıkarın
           </CardTitle>
-          <p className="text-xl text-center text-[#6B4423]">
-            Size en yakın ve en iyi kahve mekanlarını keşfedin
+          <p className="text-xl text-[#6B4423]">
+            Size en yakın kahve mekanlarını keşfedin
           </p>
         </CardHeader>
-        <CardContent className="p-8">
+
+        <CardContent className="space-y-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-end">
-            <div className="flex-1 space-y-2">
+            <div className="flex-1">
               <label className="text-sm font-medium text-[#6B4423]">
                 Şehir Seçin
               </label>
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger className="h-12 bg-white/50 border-[#8B5E34] focus:ring-[#8B5E34]">
-                  <SelectValue placeholder="İl seçiniz" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city.value} value={city.value.toString()}>
-                      {city.text}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Select
+                options={cities}
+                value={selectedCity}
+                onChange={setSelectedCity}
+                placeholder="İl seçiniz"
+                isSearchable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    borderColor: "#8B5E34",
+                    minHeight: "48px",
+                    boxShadow: "none",
+                    "&:hover": { borderColor: "#6B4423" },
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backdropFilter: "blur(10px)",
+                    zIndex: 10,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isFocused
+                      ? "rgba(139, 94, 52, 0.1)"
+                      : state.isSelected
+                      ? "rgba(139, 94, 52, 0.2)"
+                      : "transparent",
+                    color: "#6B4423",
+                    "&:hover": {
+                      backgroundColor: "rgba(139, 94, 52, 0.1)",
+                    },
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    color: "#6B4423",
+                  }),
+                  singleValue: (base) => ({
+                    ...base,
+                    color: "#6B4423",
+                  }),
+                }}
+              />
             </div>
 
-            <div className="flex-1 space-y-2">
+            <div className="flex-1">
               <label className="text-sm font-medium text-[#6B4423]">
                 İlçe Seçin
               </label>
               <Select
+                options={selectedCity?.districts || []}
                 value={selectedDistrict}
-                onValueChange={setSelectedDistrict}
-                disabled={!selectedCity}
-              >
-                <SelectTrigger className="h-12 bg-white/50 border-[#8B5E34] focus:ring-[#8B5E34]">
-                  <SelectValue placeholder="İlçe seçiniz" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currentCity?.districts.map((district) => (
-                    <SelectItem key={district.value} value={district.text}>
-                      {district.text}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={setSelectedDistrict}
+                placeholder="İlçe seçiniz"
+                isSearchable
+                isDisabled={!selectedCity}
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    borderColor: "#8B5E34",
+                    minHeight: "48px",
+                    boxShadow: "none",
+                    "&:hover": { borderColor: "#6B4423" },
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backdropFilter: "blur(10px)",
+                    zIndex: 10,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isFocused
+                      ? "rgba(139, 94, 52, 0.1)"
+                      : state.isSelected
+                      ? "rgba(139, 94, 52, 0.2)"
+                      : "transparent",
+                    color: "#6B4423",
+                    "&:hover": {
+                      backgroundColor: "rgba(139, 94, 52, 0.1)",
+                    },
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    color: "#6B4423",
+                  }),
+                  singleValue: (base) => ({
+                    ...base,
+                    color: "#6B4423",
+                  }),
+                }}
+              />
             </div>
 
             <Button
               onClick={handleSearch}
               disabled={!selectedCity || !selectedDistrict}
-              className="h-12 px-8 bg-[#6B4423] hover:bg-[#8B5E34] transition-colors duration-300"
+              className="h-12 px-8 bg-[#6B4423] hover:bg-[#8B5E34] transition-colors duration-300 rounded-lg text-white"
             >
               <Search className="w-5 h-5 mr-2" />
               Keşfet

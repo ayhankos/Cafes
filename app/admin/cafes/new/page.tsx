@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImageUpload } from "@/components/admin/image-upload";
 import {
   Select,
@@ -25,6 +25,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Trash } from "lucide-react";
+import ReactSelect from "react-select";
+
+// City and district types
+type District = {
+  value: number;
+  label: string;
+};
+
+type City = {
+  value: number;
+  label: string;
+  districts: District[];
+};
 
 const contactTypeSchema = z.object({
   type: z.enum([
@@ -60,6 +73,39 @@ const formSchema = z.object({
 
 export default function NewCafePage() {
   const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState<City[]>([]);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(
+    null
+  );
+  const [loadingCities, setLoadingCities] = useState(true);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch("/ililce.json");
+        const data = await response.json();
+
+        const formattedCities: City[] = data.map((city: any) => ({
+          value: city.value,
+          label: city.text,
+          districts: city.districts.map((district: any) => ({
+            value: district.value,
+            label: district.text,
+          })),
+        }));
+
+        setCities(formattedCities);
+      } catch (error) {
+        console.error("Error loading cities:", error);
+        toast.error("Failed to load cities and districts");
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,6 +123,25 @@ export default function NewCafePage() {
   });
 
   const contactInfos = form.watch("contactInfos");
+
+  // Update form values when city/district selections change
+  useEffect(() => {
+    if (selectedCity) {
+      form.setValue("city", selectedCity.label);
+    }
+  }, [selectedCity, form]);
+
+  useEffect(() => {
+    if (selectedDistrict) {
+      form.setValue("district", selectedDistrict.label);
+    }
+  }, [selectedDistrict, form]);
+
+  // Reset district when city changes
+  useEffect(() => {
+    setSelectedDistrict(null);
+    form.setValue("district", "");
+  }, [selectedCity, form]);
 
   const addContactInfo = () => {
     const currentContactInfos = form.getValues("contactInfos");
@@ -112,6 +177,8 @@ export default function NewCafePage() {
 
       toast.success("Cafe created successfully");
       form.reset();
+      setSelectedCity(null);
+      setSelectedDistrict(null);
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -177,6 +244,7 @@ export default function NewCafePage() {
                 )}
               />
 
+              {/* City Selector with React-Select */}
               <FormField
                 control={form.control}
                 name="city"
@@ -184,13 +252,37 @@ export default function NewCafePage() {
                   <FormItem>
                     <FormLabel>City</FormLabel>
                     <FormControl>
-                      <Input placeholder="City" {...field} />
+                      <ReactSelect
+                        placeholder="Select a city..."
+                        options={cities}
+                        value={selectedCity}
+                        onChange={(selected: any) => {
+                          setSelectedCity(selected);
+                          field.onChange(selected ? selected.label : "");
+                        }}
+                        isLoading={loadingCities}
+                        isSearchable
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            minHeight: "40px",
+                            boxShadow: "none",
+                            border: "1px solid var(--border)",
+                            "&:hover": {
+                              borderColor: "var(--ring)",
+                            },
+                          }),
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* District Selector with React-Select */}
               <FormField
                 control={form.control}
                 name="district"
@@ -198,7 +290,30 @@ export default function NewCafePage() {
                   <FormItem>
                     <FormLabel>District</FormLabel>
                     <FormControl>
-                      <Input placeholder="District" {...field} />
+                      <ReactSelect
+                        placeholder="Select a district..."
+                        options={selectedCity?.districts || []}
+                        value={selectedDistrict}
+                        onChange={(selected: any) => {
+                          setSelectedDistrict(selected);
+                          field.onChange(selected ? selected.label : "");
+                        }}
+                        isDisabled={!selectedCity}
+                        isSearchable
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            minHeight: "40px",
+                            boxShadow: "none",
+                            border: "1px solid var(--border)",
+                            "&:hover": {
+                              borderColor: "var(--ring)",
+                            },
+                          }),
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

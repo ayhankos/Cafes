@@ -1,4 +1,4 @@
 module.exports = {
-  siteUrl: "https://yourdomain.com",
+  siteUrl: "https://cafes-two.vercel.app",
   generateRobotsTxt: true,
 };

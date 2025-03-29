@@ -27,7 +27,6 @@ const HeroSection = () => {
   );
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // Reset district when city changes
   useEffect(() => {
     setSelectedDistrict(null);
   }, [selectedCity]);
